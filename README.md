@@ -2,6 +2,9 @@
 
 Jira integration with git, working on tickets creates a feature branch and you can assign code review even if you can't convince your boss to add a ```IN_REVIEW``` transition by using comments.
 
+## Example
+![screen cast](http://edisdead.com/out.gif)
+
 ## Prerequisites
 ```bash
 $ npm install -g git+https://github.com/quatrix/jira-cmd.git
@@ -25,7 +28,3 @@ You'll have the new git commands
 * ```git workon 360``` - start work on issue $PREFIX-360, this creates a feature branch and sets the ticket to ```IN_PROGRESS``` transition
 * ```git review username``` - adds a comment to the currently worked on ticket, that asks ```username``` to review your code
 * ```git done``` - sets the currently worked on ticket to done.
-
-
-## Example
-![screen cast](http://edisdead.com/out.gif)
