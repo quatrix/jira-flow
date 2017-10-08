@@ -1,0 +1,40 @@
+#!/bin/bash
+
+USERNAME=$(git config --global user.name)
+TICKET_PREFIX=$(git config --global jira.prefix)
+
+if [ "z${USERNAME}" == "z" ]
+then
+    echo "please set git user.name: git config --global user.name <USERNAME>"
+    exit 1
+fi
+
+if [ "z${TICKET_PREFIX}" == "z" ]
+then
+    echo "please set ticket prefix: git config --global jira.prefix <PREFIX>"
+    exit 1
+fi
+
+TICKET="${TICKET_PREFIX}-${1}"
+SUMMARY=$(jira show ${TICKET} | grep -e "^.*│.*Summary.*│" | cut -d│ -f3)
+SUMMARY=$(echo ${SUMMARY} | awk '{$1=$1};1' | tr '[:upper:]' '[:lower:]' | tr ' ' '_')
+SUMMARY=${SUMMARY:0:40}
+
+
+if [ "z${SUMMARY}" == "z" ]
+then
+    echo "no such ticket, aborting..."
+    exit 1
+fi
+
+BRANCH_NAME="${TICKET}_${SUMMARY}_${USERNAME}"
+
+git checkout -b ${BRANCH_NAME}
+
+if [ $? -ne 0 ]
+then
+    echo "failed switching to branch ${BRANCH_NAME}, aborting..."
+    exit 1
+fi
+
+jira start ${TICKET}

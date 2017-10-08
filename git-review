@@ -1,0 +1,26 @@
+#!/bin/bash
+
+USERS_FILE=~/.jira_users
+USER=$1
+
+if ! [ -e $USERS_FILE ]
+then
+    JIRA_USERS=$(jira users | grep @ | cut -d│ -f2 | awk '{$1=$1};1')
+
+    for u in $JIRA_USERS
+    do
+        echo $u >> ~/.jira_users
+    done
+fi
+
+IFS=$'\n'
+USERS=($(cat $USERS_FILE))
+
+if [[ ! " ${USERS[@]} " =~ " ${USER} " ]]; then
+    echo "user ${USER} doesn't exists, if it's a new user consider deleting $USERS_FILE and running again"
+    exit 1
+fi
+
+CURRENT_TICKET=$(git symbolic-ref HEAD | sed 's!refs\/heads\/!!' | cut -d_ -f1)
+
+jira comment ${CURRENT_TICKET} "Hi, [~${USER}], Please review my work, ktxbye"

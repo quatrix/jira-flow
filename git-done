@@ -1,0 +1,5 @@
+#!/bin/bash
+
+CURRENT_TICKET=$(git symbolic-ref HEAD | sed 's!refs\/heads\/!!' | cut -d_ -f1)
+
+jira done ${CURRENT_TICKET}
