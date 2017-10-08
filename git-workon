@@ -29,7 +29,7 @@ fi
 
 BRANCH_NAME="${TICKET}_${SUMMARY}_${USERNAME}"
 
-git checkout -b ${BRANCH_NAME}
+git checkout -B ${BRANCH_NAME}
 
 if [ $? -ne 0 ]
 then
