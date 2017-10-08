@@ -26,3 +26,6 @@ You'll have the new git commands
 * ```git review username``` - adds a comment to the currently worked on ticket, that asks ```username``` to review your code
 * ```git done``` - sets the currently worked on ticket to done.
 
+
+## Example
+![screen cast](http://edisdead.com/out.gif)
