@@ -1,0 +1,21 @@
+#!/bin/bash
+
+
+ISSUE=$1
+CURRENT_TICKET=$(git symbolic-ref HEAD | sed 's!refs\/heads\/!!' | cut -d_ -f1)
+TICKET_PREFIX=$(git config --global jira.prefix)
+
+if [ "z${TICKET_PREFIX}" == "z" ]
+then
+    echo "please set ticket prefix: git config --global jira.prefix <PREFIX>"
+    exit 1
+fi
+
+if [ "z${ISSUE}" == "z" ]
+then
+    ISSUE=${CURRENT_TICKET}
+else
+    ISSUE="${TICKET_PREFIX}-${ISSUE}"
+fi
+
+jira show ${ISSUE}

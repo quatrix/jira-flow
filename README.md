@@ -25,6 +25,7 @@ Information stored!
 You'll have the new git commands
 
 * ```git issues``` - lists all non-done issues assigned to you
+* ```git issue 360``` - show full description of an issue $PREFIX-360, if no ticket number provided tries to figure out from current branch
 * ```git workon 360``` - start work on issue $PREFIX-360, this creates a feature branch and sets the ticket to ```IN_PROGRESS``` transition
 * ```git review username``` - adds a comment to the currently worked on ticket, that asks ```username``` to review your code
 * ```git done``` - sets the currently worked on ticket to done.
