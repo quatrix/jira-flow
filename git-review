@@ -2,6 +2,29 @@
 
 USERS_FILE=~/.jira_users
 USER=$1
+MERGE_REQUEST_LINK=$2
+
+regex='(https?)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
+
+
+if [ "z${USER}" == "z" ]
+then
+    echo "usage: git review <user> <merge reqeust url>"
+    exit 0
+fi
+
+
+if [[ ! $MERGE_REQUEST_LINK =~ $regex ]]
+then
+    echo "Please supply a valid url for your merge request"
+    echo "In order to do that, you need to:"
+    echo "1. push your changes"
+    echo "2. open a merge request"
+    echo "3. copy the merge request url"
+    echo "4. pass it as the 2nd argument to git review"
+    exit 1
+fi
+
 
 if ! [ -e $USERS_FILE ]
 then
@@ -23,6 +46,37 @@ if [[ ! " ${USERS[@]} " =~ " ${USER} " ]]; then
     exit 1
 fi
 
-CURRENT_TICKET=$(git symbolic-ref HEAD | sed 's!refs\/heads\/!!' | cut -d_ -f1)
+CURRENT_BRANCH=$(git symbolic-ref HEAD | sed 's!refs\/heads\/!!')
+CURRENT_TICKET=$(echo ${CURRENT_BRANCH} | cut -d_ -f1)
 
-jira comment ${CURRENT_TICKET} "Hi, [~${USER}], Please review my work, ktxbye"
+if [[ ${CURRENT_TICKET} != ${TICKET_PREFIX}* ]]
+then
+    echo "must be working on a ticket to issue review request"
+    exit 1
+fi
+
+git diff-index --quiet HEAD --
+
+if [ $? != 0 ]
+then
+    while true; do
+    read -p "you have some uncommited work, are you sure you want to request code review? " yn
+    case $yn in
+        [Yy]* ) break;;
+        [Nn]* ) echo "aborting..."; exit 1;;
+        * ) echo "Please answer yes or no.";;
+    esac
+    done
+fi
+
+git diff @{u} > /dev/null 2>&1
+
+if [ $? != 0 ]
+then
+    echo "did you forget to push your branch? run:"
+    echo "git push -u origin ${CURRENT_BRANCH}"
+    exit 1
+fi
+
+
+jira comment ${CURRENT_TICKET} "Hi, [~${USER}], Please review my merge request: ${MERGE_REQUEST_LINK}"
