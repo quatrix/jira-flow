@@ -28,3 +28,4 @@ You'll have the new git commands
 * ```git workon 360``` - start work on issue $PREFIX-360, this creates a feature branch and sets the ticket to ```IN_PROGRESS``` transition
 * ```git review username``` - adds a comment to the currently worked on ticket, that asks ```username``` to review your code
 * ```git done``` - sets the currently worked on ticket to done.
+* ```git users``` - lists all available users
