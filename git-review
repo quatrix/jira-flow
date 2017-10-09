@@ -17,7 +17,9 @@ IFS=$'\n'
 USERS=($(cat $USERS_FILE))
 
 if [[ ! " ${USERS[@]} " =~ " ${USER} " ]]; then
-    echo "user ${USER} doesn't exists, if it's a new user consider deleting $USERS_FILE and running again"
+    echo "User ${USER} doesn't exists, available users:"
+    echo "${USERS[@]}" | tr " " "\n"
+    echo "(if it's a new user consider deleting $USERS_FILE and running again)"
     exit 1
 fi
 
