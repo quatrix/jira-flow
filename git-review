@@ -14,18 +14,6 @@ then
 fi
 
 
-if [[ ! $MERGE_REQUEST_LINK =~ $regex ]]
-then
-    echo "Please supply a valid url for your merge request"
-    echo "In order to do that, you need to:"
-    echo "1. push your changes"
-    echo "2. open a merge request"
-    echo "3. copy the merge request url"
-    echo "4. pass it as the 2nd argument to git review"
-    exit 1
-fi
-
-
 if ! [ -e $USERS_FILE ]
 then
     JIRA_USERS=$(jira users | grep @ | cut -d│ -f2 | awk '{$1=$1};1')
@@ -52,6 +40,17 @@ CURRENT_TICKET=$(echo ${CURRENT_BRANCH} | cut -d_ -f1)
 if [[ ${CURRENT_TICKET} != ${TICKET_PREFIX}* ]]
 then
     echo "must be working on a ticket to issue review request"
+    exit 1
+fi
+
+if [[ ! $MERGE_REQUEST_LINK =~ $regex ]]
+then
+    echo "Please supply a valid url for your merge request"
+    echo "In order to do that, you need to:"
+    echo "1. git push -u origin ${CURRENT_BRANCH}"
+    echo "2. open a merge request"
+    echo "3. copy the merge request url"
+    echo "4. pass it as the 2nd argument to git review"
     exit 1
 fi
 
