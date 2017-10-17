@@ -30,7 +30,16 @@ fi
 BRANCH_NAME="${TICKET}_${SUMMARY}_${USERNAME}"
 FROM_BRANCH=${2}
 
-git checkout -B ${BRANCH_NAME} ${FROM_BRANCH}
+git rev-parse --verify ${BRANCH_NAME} > /dev/null 2>&1
+
+if [ $? -ne 0 ]
+then
+    git checkout -b ${BRANCH_NAME}
+    exit 1
+else
+    git checkout ${BRANCH_NAME}
+fi
+
 
 if [ $? -ne 0 ]
 then
