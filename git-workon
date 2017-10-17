@@ -17,7 +17,7 @@ fi
 
 TICKET="${TICKET_PREFIX}-${1}"
 SUMMARY=$(jira show ${TICKET} | grep -e "^.*│.*Summary.*│" | cut -d│ -f3)
-SUMMARY=$(echo ${SUMMARY} | awk '{$1=$1};1' | tr '[:upper:]' '[:lower:]' | tr ' ' '_')
+SUMMARY=$(echo ${SUMMARY} | awk '{$1=$1};1' | tr '[:upper:]' '[:lower:]' | tr ' /\:' '_')
 SUMMARY=${SUMMARY:0:40}
 
 

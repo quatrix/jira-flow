@@ -25,8 +25,8 @@ Information stored!
 You'll have the new git commands
 
 * ```git issues``` - lists all non-done issues assigned to you
-* ```git issue 360``` - show full description of an issue $PREFIX-360, if no ticket number provided tries to figure out from current branch
+* ```git issue [issue]``` - show full description of current issue, or of [issue] if passed
 * ```git workon 360 [soruce-branch]``` - start work on issue $PREFIX-360, this creates a feature branch and sets the ticket to ```IN_PROGRESS``` transition, if optinal argument source-branch supplied, it branches from source-branch instead of current branch
 * ```git review <username> <merge request link>``` - adds a comment to the currently worked on ticket, that asks ```username``` to review your code
-* ```git done``` - sets the currently worked on ticket to done.
+* ```git done [issue]``` - set current issue to done, or if [issue] is passed, set it to done
 * ```git users``` - lists all available users
