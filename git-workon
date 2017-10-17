@@ -34,7 +34,7 @@ git rev-parse --verify ${BRANCH_NAME} > /dev/null 2>&1
 
 if [ $? -ne 0 ]
 then
-    git checkout -b ${BRANCH_NAME}
+    git checkout -b ${BRANCH_NAME} ${FROM_BRANCH}
     exit 1
 else
     git checkout ${BRANCH_NAME}
