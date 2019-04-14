@@ -1,7 +1,5 @@
 # Jira Flow 
 
-Jira integration with git, working on tickets creates a feature branch and you can assign code review even if you can't convince your boss to add a ```IN_REVIEW``` transition by using comments.
-
 ## Example
 ![screen cast](http://edisdead.com/out.gif)
 
