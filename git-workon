@@ -15,6 +15,9 @@ then
     exit 1
 fi
 
+
+
+
 TICKET="${TICKET_PREFIX}-${1}"
 SUMMARY=$(jira show ${TICKET} | grep -e "^.*│.*Summary.*│" | awk -F"│" '{print $3}')
 SUMMARY=$(echo ${SUMMARY} | awk '{$1=$1};1' | tr '[:upper:]' '[:lower:]' | tr ' /\:' '_')
@@ -34,6 +37,23 @@ git rev-parse --verify ${BRANCH_NAME} > /dev/null 2>&1
 
 if [ $? -ne 0 ]
 then
+    CURRENT_BRANCH=$(git symbolic-ref HEAD | sed 's!refs\/heads\/!!')
+    if [ ${CURRENT_BRANCH} != "dev" ] 
+    then
+        while true; do
+            read -p "you are not basing of dev branch, are you sure? " yn
+            case $yn in
+                [Yy]* ) 
+                    break;;
+                [Nn]* ) echo "aborting..."; exit 1;;
+                * ) echo "Please answer yes or no.";;
+            esac
+        done
+    else
+        echo "brining dev up to speed..."
+        git pull
+    fi
+
     git checkout -b ${BRANCH_NAME} ${FROM_BRANCH}
     exit 1
 else
