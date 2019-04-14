@@ -1,28 +1,21 @@
 #!/bin/bash
 
-USERS_FILE=~/.jira_users
 USER=$1
-MERGE_REQUEST_LINK=$2
+TICKET_PREFIX=$(git config --global jira.prefix)
+USERS_FILE=~/.gitlab_users
 
-regex='(https?)://[-A-Za-z0-9\+&@#/%?=~_|!:,.;]*[-A-Za-z0-9\+&@#/%=~_|]'
-
+if [ "z${TICKET_PREFIX}" == "z" ]
+then
+    echo "please set ticket prefix: git config --global jira.prefix <PREFIX>"
+    exit 1
+fi
 
 if [ "z${USER}" == "z" ]
 then
-    echo "usage: git review <user> <merge reqeust url>"
-    exit 0
+    echo "usage: git review <username>"
+    exit 1
 fi
 
-
-if ! [ -e $USERS_FILE ]
-then
-    JIRA_USERS=$(jira users | grep @ | cut -d│ -f2 | awk '{$1=$1};1')
-
-    for u in $JIRA_USERS
-    do
-        echo $u >> ~/.jira_users
-    done
-fi
 
 IFS=$'\n'
 USERS=($(cat $USERS_FILE))
@@ -30,27 +23,22 @@ USERS=($(cat $USERS_FILE))
 if [[ ! " ${USERS[@]} " =~ " ${USER} " ]]; then
     echo "User ${USER} doesn't exists, available users:"
     echo "${USERS[@]}" | tr " " "\n"
-    echo "(if it's a new user consider deleting $USERS_FILE and running again)"
+    echo "(if it's a new user, add it to $USERS_FILE and try again)"
     exit 1
 fi
 
 CURRENT_BRANCH=$(git symbolic-ref HEAD | sed 's!refs\/heads\/!!')
 CURRENT_TICKET=$(echo ${CURRENT_BRANCH} | cut -d_ -f1)
 
-if [[ ${CURRENT_TICKET} != ${TICKET_PREFIX}* ]]
+if [[ ! $CURRENT_BRANCH == ${TICKET_PREFIX}* ]]
 then
     echo "must be working on a ticket to issue review request"
     exit 1
 fi
 
-if [[ ! $MERGE_REQUEST_LINK =~ $regex ]]
+if [[ ${CURRENT_TICKET} != ${TICKET_PREFIX}* ]]
 then
-    echo "Please supply a valid url for your merge request"
-    echo "In order to do that, you need to:"
-    echo "1. git push -u origin ${CURRENT_BRANCH}"
-    echo "2. open a merge request"
-    echo "3. copy the merge request url"
-    echo "4. pass it as the 2nd argument to git review"
+    echo "must be working on a ticket to issue review request"
     exit 1
 fi
 
@@ -77,5 +65,5 @@ then
     exit 1
 fi
 
-
-jira comment ${CURRENT_TICKET} "Hi, [~${USER}], Please review my merge request: ${MERGE_REQUEST_LINK}"
+lab mr -v -t dev -a ${USER}
+jira review ${CURRENT_TICKET}

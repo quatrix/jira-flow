@@ -5,9 +5,17 @@ Jira integration with git, working on tickets creates a feature branch and you c
 ## Example
 ![screen cast](http://edisdead.com/out.gif)
 
+## Gitlab Token
+go to https://gitlab.com/profile/personal_access_tokens and create a private token
+
+```bash
+git config --global --add gitlab.url https://gitlab.com
+git config --global --add gitlab.token TOKEN_YOU_GOT
+```
+
 ## Prerequisites
 ```bash
-$ npm install -g git+https://github.com/quatrix/jira-cmd.git
+$ npm install -g jira-cmd git-lab-cli
 $ jira
 Jira URL: https://jira.atlassian.com/
 Username: xxxxxx
@@ -27,6 +35,5 @@ You'll have the new git commands
 * ```git issues``` - lists all non-done issues assigned to you
 * ```git issue [issue]``` - show full description of current issue, or of [issue] if passed
 * ```git workon 360 [soruce-branch]``` - start work on issue $PREFIX-360, this creates a feature branch and sets the ticket to ```IN_PROGRESS``` transition, if optinal argument source-branch supplied, it branches from source-branch instead of current branch
-* ```git review <username> <merge request link>``` - adds a comment to the currently worked on ticket, that asks ```username``` to review your code
+* ```git review <username>``` - create a merge request, assign it to ```<username>```  and set the story to code review status.
 * ```git done [issue]``` - set current issue to done, or if [issue] is passed, set it to done
-* ```git users``` - lists all available users
